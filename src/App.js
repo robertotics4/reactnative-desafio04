@@ -12,18 +12,12 @@ import {
 import api from "./services/api";
 
 export default function App() {
-  const { repositories, setRepositories } = useState([]);
+  const [repositories, setRepositories] = useState([]);
 
   useEffect(() => {
-    async function getRepositories() {
-      const response = await api.get("/repositories");
-
-      const repository = response.data;
-
-      setRepositories([...repositories, repository]);
-    }
-
-    getRepositories();
+    api.get('repositories').then(response => {
+      setRepositories(response.data);
+    });
   }, []);
 
   async function handleLikeRepository(id) {
@@ -46,11 +40,11 @@ export default function App() {
     <>
       <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
       <SafeAreaView style={styles.container}>
+
         <FlatList
-          style={styles.container}
           data={repositories}
           keyExtractor={(repository) => repository.id}
-          renderItem={({ item: repository }) => {
+          renderItem={({ item: repository }) => (
             <View style={styles.repositoryContainer}>
               <Text style={styles.repository}>{repository.title}</Text>
 
@@ -80,9 +74,10 @@ export default function App() {
               >
                 <Text style={styles.buttonText}>Curtir</Text>
               </TouchableOpacity>
-            </View>;
-          }}
+            </View>
+          )}
         />
+
       </SafeAreaView>
     </>
   );
